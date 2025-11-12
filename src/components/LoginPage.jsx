@@ -24,7 +24,7 @@ export default function LoginPage({ onLogin }) {       //onLogin is a prop funct
     <div className='center-card'>
         <h1>Leave Management System</h1>
         <form onSubmit={handleSubmit} className='form'>
-            <label htmlFor="">
+            <label htmlFor="username">
                 Username : 
                 <input type="text" value = {username} onChange={(e)=>{setUsername(e.target.value)}} placeholder="e.g. , rahul or admin"/>    
             </label>

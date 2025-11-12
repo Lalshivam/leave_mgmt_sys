@@ -37,22 +37,45 @@ export const leaveService = {
   },
 
   // Admin function to set the status of a leave application
-  adminSetStatus(id,status){
+  // ✅ UPDATED - Now validates balance before approval
+  adminSetStatus(id, status) {
     const leaves = read();                            // Read existing leaves
-    const idx = leaves.findIndex((l)=>l.id === id);   // Find the index of the leave application by ID
-    if(idx !== -1){                                   // If found
-      leaves[idx].status = status;                    // Update the status
-      write(leaves);                                  // Write the updated list back to localStorage
-      return Promise.resolve({ ok: true });           // Return a resolved promise with success status
+    const idx = leaves.findIndex((l) => l.id === id); // Find the index of the leave application by ID
+    
+    if (idx === -1) {
+      return Promise.reject(new Error('Leave application not found'));
     }
-    return Promise.reject(new Error('Leave application not found')); // If not found, return a rejected promise with an error
+
+    const leaveApplication = leaves[idx];
+
+    // ✅ NEW: If approving, check if user has sufficient balance
+    if (status === 'approved') {
+      const balance = this.getLeaveBalance(leaveApplication.username);
+      const requestedDays = leaveApplication.days || 0;
+
+      if (requestedDays > balance) {
+        return Promise.reject(
+          new Error(
+            `Cannot approve: User "${leaveApplication.username}" has insufficient balance. ` +
+            `Requested: ${requestedDays} days, Available: ${balance} days`
+          )
+        );
+      }
+    }
+
+    // If validation passes (or status is not 'approved'), update the status
+    leaves[idx].status = status;
+    write(leaves);
+    return Promise.resolve({ ok: true });
   },
 
   // Calculate remaining leave balance for a user
-  getLeaveBalance(username){
+  getLeaveBalance(username) {
     const Start = 20;          // Starting leave balance
     const leaves = read();        // Read existing leaves
-    const approvedDays = leaves.filter((l) => l.username == username && l.status === 'approved').reduce((s,r) => s + (r.days || 0), 0); //Sum approved leave days
+    const approvedDays = leaves
+      .filter((l) => l.username == username && l.status === 'approved')
+      .reduce((s, r) => s + (r.days || 0), 0); //Sum approved leave days
     return Start - approvedDays;                     // Return remaining leave balance
   },
 
