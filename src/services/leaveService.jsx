@@ -1,3 +1,4 @@
+// src/services/leaveService.jsx
 const STORAGE_KEY = 'lms_leaves_v1';        //versioned key
 
 // Helper functions to read and write leave data from/to localStorage
@@ -27,7 +28,7 @@ export const leaveService = {
   },
 
   // Fetch leaves for a specific user
-  getLeavesByUser(username) {                             
+  getLeavesByUser(username) {
     return read().filter((l) => l.username === username);     // Filter leaves by username
   },
 
@@ -36,19 +37,35 @@ export const leaveService = {
     return read();           // Return all leave applications
   },
 
+
+  resetIfFirstJanuary(username) {
+    const user = JSON.parse(localStorage.getItem(username));
+
+    const today = new Date();
+    const isFirstJanuary = today.getDate() === 1 && today.getMonth() === 0;
+
+    if (isFirstJanuary) {
+        user.leaveBalance = 20;   // reset
+        localStorage.setItem(username, JSON.stringify(user));
+    }
+  },
+
+  
   // Admin function to set the status of a leave application
-  // ✅ UPDATED - Now validates balance before approval
+  //  UPDATED - Now validates balance before approval
   adminSetStatus(id, status) {
     const leaves = read();                            // Read existing leaves
+    if (!['approved', 'rejected', 'pending'].includes(status))
+      return Promise.reject(new Error('Invalid status value'));
     const idx = leaves.findIndex((l) => l.id === id); // Find the index of the leave application by ID
-    
+
     if (idx === -1) {
       return Promise.reject(new Error('Leave application not found'));
     }
 
     const leaveApplication = leaves[idx];
 
-    // ✅ NEW: If approving, check if user has sufficient balance
+    // NEW: If approving, check if user has sufficient balance
     if (status === 'approved') {
       const balance = this.getLeaveBalance(leaveApplication.username);
       const requestedDays = leaveApplication.days || 0;
@@ -81,7 +98,7 @@ export const leaveService = {
 
   // Utility function to calculate the number of days between two dates
   calculateDays(startDate, endDate) {
-    const s = new Date(startDate);             
+    const s = new Date(startDate);
     const e = new Date(endDate);
     const diff = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1; // Calculate difference in days
     return diff > 0 ? diff : 0;

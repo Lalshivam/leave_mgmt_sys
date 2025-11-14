@@ -1,3 +1,4 @@
+// src/components/LeaveHistory.jsx
 // import required modules
 import React, { useEffect, useState } from 'react'
 import { leaveService } from '../services/leaveService';
@@ -70,17 +71,17 @@ export default function LeaveHistory({ username, onAction, currentUser = {} }) {
                     <button onClick={() => setError('')} className='close-btn'>✕</button>
                 </div>
             )}
-            <table className='table'>
+            <table className='table' >
                 <thead>
                     <tr>
-                        <th>User</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Days</th>
-                        <th>Reason</th>
-                        <th>Status</th>
-                        <th>Applied At</th>
-                        {isAdmin && <th>Action</th>}
+                        <th style={{backgroundColor:'violet'}}>User</th>
+                        <th style={{backgroundColor:'violet'}}>From</th>
+                        <th style={{backgroundColor:'violet'}}>To</th>
+                        <th style={{backgroundColor:'violet'}}>Days</th>
+                        <th style={{backgroundColor:'violet'}}>Reason</th>
+                        <th style={{backgroundColor:'violet'}}>Status</th>
+                        <th style={{backgroundColor:'violet'}}>Applied At</th>
+                        {isAdmin && <th style={{backgroundColor:'violet'}}>Action</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -95,7 +96,7 @@ export default function LeaveHistory({ username, onAction, currentUser = {} }) {
                  */}
                     {rows.map((r) => (
                         <tr key={r.id}>
-                            <td><strong>{r.username}</strong></td>
+                            <td style={{backgroundColor:'red'}}><strong>{r.username}</strong></td>
                             <td>{r.startDate}</td>
                             <td>{r.endDate}</td>
                             <td>{r.days}</td>

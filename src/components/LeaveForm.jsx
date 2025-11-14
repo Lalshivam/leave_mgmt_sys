@@ -1,3 +1,4 @@
+// src/components/LeaveForm.jsx
 import React, { useState, useEffect } from 'react'
 import { leaveService } from '../services/leaveService';
 
@@ -59,15 +60,23 @@ export default function LeaveForm({ onSubmitted, username }) {
 
         const days = leaveService.calculateDays(startDate, endDate);
 
-        // ✅ CORRECT - Check actual balance value
+        //  CORRECT - Check actual balance value
         if (leaveBalance <= 0) {
             return alert('All leave balance exhausted');
         }
 
-        // ✅ CORRECT - Check if days exceed balance
+        //  CORRECT - Check if days exceed balance
         if (days > leaveBalance) {
             return alert(`Insufficient leave balance. Requested: ${days} days, Available: ${leaveBalance} days`);
         }
+
+        const existingLeaves = leaveService.getLeavesByUser(username);
+        const overlaps = existingLeaves.some(l => 
+        l.status !== "rejected" &&  
+        (new Date(startDate) <= new Date(l.endDate)) &&
+        (new Date(endDate) >= new Date(l.startDate))
+    );
+    if (overlaps) return alert('You already have a leave overlapping with this period.');
 
         const form = {
             username,
@@ -116,6 +125,7 @@ export default function LeaveForm({ onSubmitted, username }) {
                 )}
             </div>
 
+            <div style={{display:'flex'}}>
             <label>
                 Start Date
                 <input
@@ -124,7 +134,8 @@ export default function LeaveForm({ onSubmitted, username }) {
                     onChange={(e) => setStartDate(e.target.value)}
                     min={getTodayDate()}
                     required
-                />
+                    style={{width:'150px', marginRight: '20px'}}
+                    />
             </label>
 
             <label>
@@ -135,9 +146,11 @@ export default function LeaveForm({ onSubmitted, username }) {
                     onChange={(e) => setEndDate(e.target.value)}
                     min={startDate || getTodayDate()}
                     required
-                />
+                    style={{width:'150px'}}
+                    />
             </label>
 
+            </div>
             <label htmlFor="reason">
                 Reason
                 <textarea
@@ -146,6 +159,7 @@ export default function LeaveForm({ onSubmitted, username }) {
                     name="reason"
                     id="reason"
                     placeholder="Reason for leave (optional)"
+                    style={{height:'120px'}}
                 ></textarea>
             </label>
 

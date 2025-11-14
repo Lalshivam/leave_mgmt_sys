@@ -1,17 +1,18 @@
+// src/services/authService.jsx
 const AUTH_KEY = 'lms_current_user';   // Key to store current user data in localStorage
 
 const listeners = new Set();        // Set of subscribed listeners for auth state changes
 
 
 // The authService object encapsulates all authentication-related operations
-export const authService = {         
+export const authService = {
 
     // Simulate user login by storing user data in localStorage
     login(user) {
         localStorage.setItem(AUTH_KEY, JSON.stringify(user));
         listeners.forEach((l) => l(user));
     },
-    
+
     // Simulate user logout by removing user data from localStorage
     logout() {
         localStorage.removeItem(AUTH_KEY);
@@ -25,9 +26,18 @@ export const authService = {
     },
 
     // Subscribe to authentication state changes
-    subscribe(listener){
+    subscribe(listener) {
         listeners.add(listener);
+        listener(this.getCurrentUser());
         return () => listeners.delete(listener);
     }
+
 };
+
+window.addEventListener('storage', (e) => {
+    if (e.key === AUTH_KEY) {
+        const user = e.newValue ? JSON.parse(e.newValue) : null;
+        listeners.forEach((l) => l(user));
+    }
+});
 

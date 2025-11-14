@@ -1,3 +1,4 @@
+ /* src/App.css */
 :root {
   --bg: #9fa6ae;
   --card: #fff;
@@ -22,12 +23,27 @@ body {
 }
 
 .center-card {
-  max-width: 420px;
+  /* max-width: 420px;
   margin: 6vh auto;
   padding: 24px;
   background: var(--card);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  border-radius: 8px
+  border-radius: 8px */
+  max-width: 420px;
+  margin: 6vh auto;
+  padding: 24px;
+
+  /* Glassmorphism core styles */
+  background: rgba(255, 255, 255, 0.15);   /* translucent white layer */
+  border-radius: 16px;
+  backdrop-filter: blur(10px);             /* <-- key to glass effect */
+  -webkit-backdrop-filter: blur(10px);     /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  /* Subtle shadow for depth */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+  color: #000000;  
 }
 
 .form {
@@ -49,7 +65,7 @@ body {
   border-radius: 6px
 }
 
-.form-actions {
+.form-action {
   display: flex;
   gap: 8px;
   justify-content: flex-end
@@ -73,7 +89,7 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     padding: 16px 24px;
-    background-color: #211e1e;
+    background-color: #8eb5d0;
     color: white;
     /* background: linear-gradient(#fff, #f9fbff); */
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
@@ -93,10 +109,29 @@ button:disabled {
 }
 
 .card {
-  background: var(--card);
+  /* background: var(--card);
   padding: 12px;
   border-radius: 8px;
-  box-shadow: 0 6px 14px rgba(13, 21, 46, 0.04)
+  box-shadow: 0 6px 14px rgba(13, 21, 46, 0.04) */
+
+  /* Glassmorphism core styles */
+  background: rgba(255, 255, 255, 0.15);   /* translucent white layer */
+  border-radius: 16px;
+  backdrop-filter: blur(10px);             /* <-- key to glass effect */
+  -webkit-backdrop-filter: blur(10px);     /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  /* Subtle shadow for depth */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+  color: #000000;
+   /*give card a srollbar   */
+  padding: 12px;
+  border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto; 
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .card.wide {
@@ -104,7 +139,7 @@ button:disabled {
 }
 
 .table-wrap {
-  overflow: auto
+  overflow: auto,
 }
 
 .table {
